@@ -6,6 +6,10 @@
  * @callback AddElementResultCallback
  * @param {string} resultMessage
  * @returns {void}
+ * 
+ * @callback ImportResultCallback
+ * @param {string} resultMessage
+ * @returns {void}
  */
 
 class AuthorManager{
@@ -25,6 +29,11 @@ class AuthorManager{
      */
     #addElementResultCallback;
 
+    /**
+     * @type {ImportResultCallback}
+     */
+    #importResultCallback;
+
     //                                                      Konstruktor
     constructor(){
         this.#authorList = [];
@@ -42,7 +51,6 @@ class AuthorManager{
         author.work = element.work;
         author.concept = element.concept;
         this.#authorList.push(author);
-        this.#addElementResultCallback('sikeres elem felvétel');
         if (author.validate()){
             this.#authorList.push(author);
             this.#addElementResultCallback('sikeres elem felvétel');
@@ -54,10 +62,44 @@ class AuthorManager{
 
     /**
      * 
+     * @param {import(".").AuthorType} elementList 
+     * @returns {void}
+     */
+    addElementList(elementList){
+        for (const elem of elementList){
+            const author = new Author();
+            author.id = this.#authorList.length;
+            author.name = elem.author;
+            author.concept = elem.concept;
+            author.work = elem.work;
+            if (author.validate()){
+                this.#authorList.push(author);
+                this.#importResultCallback('Sikeres volt a file feltöltés.');
+            }
+            else{
+                this.#importResultCallback('Nem volt sikeres a file feltöltés.');
+                break;
+            }
+        }
+    }
+
+    /**
+     * 
      * @returns {void}
      */
     getAllElement(){
         this.#tableCallback(this.#authorList);
+    }
+
+    /**
+     * @returns {void}
+     */
+    getExportContent(){
+        const result = [];
+        for (const author of this.#authorList){
+            result.push(`${author.name};${author.work};${author.concept}`);
+        }
+        return result.join('\n');
     }
 
     //                                                  Getter / Setter fg.
@@ -73,6 +115,13 @@ class AuthorManager{
      */
     set AddElementResultCallback(value){
         this.#addElementResultCallback = value;
+    }
+
+    /**
+     * @param {ImportResultCallback} value
+     */
+    set importResultCallback(value){
+        this.#importResultCallback = value;
     }
 }
 

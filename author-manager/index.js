@@ -1,4 +1,5 @@
 import { FormController } from './form.js';
+import { ImportExport } from './importexport.js';
 import { AuthorManager } from './maneger.js';
 import { NavBar } from './navigationbar.js'
 import { Table } from './table.js';
@@ -27,11 +28,6 @@ const formFields = [{
 const headerArray = ['Szerző', 'Mű', 'Fogalom'];
 
 const manager = new AuthorManager();
-manager.addElement({
-    author: 'aaa',
-    concept: 'bbb',
-    work: 'ccc'
-});
 const navbar = new NavBar();
 navbar.appendTo(document.body);
 const table = new Table('table', headerArray, manager);
@@ -39,5 +35,8 @@ table.appendTo(document.body);
 navbar.addViewElement('Táblázat', table);
 const form = new FormController('tableForm', formFields, manager);
 form.appendTo(document.body);
+const importExport = new ImportExport('importexport', manager);
+importExport.appendTo(document.body);
+navbar.addViewElement('Import/export', importExport);
 navbar.addViewElement('Form', form);
 navbar.activate('table');
